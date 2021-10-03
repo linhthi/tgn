@@ -58,14 +58,15 @@ class TGN(torch.nn.Module):
       self.memory_update_at_start = memory_update_at_start
       raw_message_dimension = 2 * self.memory_dimension + self.n_edge_features + \
                               self.time_encoder.dimension
-      message_dimension = message_dimension if message_function != "identity" else raw_message_dimension
+      message_dimension = raw_message_dimension if message_function != "identity" else message_dimension
       self.memory = Memory(n_nodes=self.n_nodes,
                            memory_dimension=self.memory_dimension,
                            input_dimension=message_dimension,
                            message_dimension=message_dimension,
                            device=device)
       self.message_aggregator = get_message_aggregator(aggregator_type=aggregator_type,
-                                                       device=device)
+                                                       device=device,
+                                                       message_dimension=message_dimension)
       self.message_function = get_message_function(module_type=message_function,
                                                    raw_message_dimension=raw_message_dimension,
                                                    message_dimension=message_dimension)
